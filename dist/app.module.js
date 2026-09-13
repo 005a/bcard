@@ -13,13 +13,7 @@ let AppModule = class AppModule {
 };
 AppModule = __decorate([
     Module({
-        imports: [
-            ObserveModule.forRoot({
-                appKey: 'YOUR_APP_KEY',
-                appSecret: 'YOUR_APP_SECRET',
-                serviceId: 'mycv',
-            }),
-        ],
+        imports: [],
         controllers: [AppController],
         providers: [AppService],
     })
