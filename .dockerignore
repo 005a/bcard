@@ -1,10 +1,10 @@
+.git
+.gitignore
+.env
+.pnpm-store
 node_modules
 dist
 coverage
-.env
-.env.*
-!.env.example
 *.tsbuildinfo
-.pnpm-store
-schema.gql
+README.md
 src/generated/prisma
