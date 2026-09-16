@@ -1,0 +1,97 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+// 1. Профиль:
+// - имя;
+// - краткое описание;
+// - ссылки на GitHub/LinkedIn или другие профессиональные ресурсы.
+
+// 2. Список навыков.
+
+// 3. Опыт работы:
+// - компания;
+// - должность;
+// - период работы;
+// - Ваши достижения.
+
+// 4. Проекты:
+// - название;
+// - ссылка на проект/репозиторий.
+
+model Profile {
+  id          Int                @id @default(autoincrement())
+  slug        String             @unique
+  name        String
+  description String             @db.Text
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  links       ProfessionalLink[]
+  skills      Skill[]
+  experience  Experience[]
+  projects    Project[]
+
+  @@map("profiles")
+}
+
+model ProfessionalLink {
+  id        Int     @id @default(autoincrement())
+  key       String
+  label     String
+  url       String
+  profileId Int     @map("profile_id")
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, key])
+  @@index([profileId])
+  @@map("professional_links")
+}
+
+model Skill {
+  id        Int     @id @default(autoincrement())
+  name      String
+  category  String?
+  profileId Int     @map("profile_id")
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, name])
+  @@index([profileId])
+  @@map("skills")
+}
+
+model Experience {
+  id           Int       @id @default(autoincrement())
+  key          String
+  company      String
+  position     String
+  startDate    DateTime  @map("start_date") @db.Date
+  endDate      DateTime? @map("end_date") @db.Date
+  achievements String[]  @default([])
+  profileId    Int       @map("profile_id")
+  profile      Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, key])
+  @@index([profileId])
+  @@map("experience")
+}
+
+model Project {
+  id          Int     @id @default(autoincrement())
+  key         String
+  name        String
+  description String? @db.Text
+  url         String
+  profileId   Int     @map("profile_id")
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, key])
+  @@index([profileId])
+  @@map("projects")
+}
